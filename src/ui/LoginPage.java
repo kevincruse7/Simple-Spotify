@@ -7,8 +7,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 public class LoginPage {
-  @FXML private TextField username;
-  @FXML private PasswordField password;
-  @FXML private Button login;
-  @FXML private Text loginFailed;
+    @FXML private TextField username;
+    @FXML private PasswordField password;
+    @FXML private Button login;
+    @FXML private Text loginFailed;
 }
