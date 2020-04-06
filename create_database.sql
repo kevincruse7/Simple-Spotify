@@ -22,7 +22,7 @@ CREATE TABLE songs
     song_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(64) NOT NULL,
     length INT NOT NULL,
-    mp3 LONGBLOB NOT NULL
+    stream LONGBLOB NOT NULL
 );
 
 DROP TABLE IF EXISTS albums;

@@ -6,11 +6,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LoginPage">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.LoginPage">
    <children>
       <TextField fx:id="username" layoutX="76.0" layoutY="81.0" promptText="Username" />
       <PasswordField fx:id="password" layoutX="76.0" layoutY="122.0" promptText="Password" />
-      <Button fx:id="login" layoutX="128.0" layoutY="161.0" mnemonicParsing="false" text="Login" />
+      <Button fx:id="login" layoutX="128.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleLogin" text="Login" />
       <Text fx:id="loginFailed" fill="#da0c0c" layoutX="118.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login failed!" visible="false" />
    </children>
 </AnchorPane>

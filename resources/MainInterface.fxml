@@ -11,23 +11,23 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainInterface">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MainInterface">
    <children>
       <SplitPane dividerPositions="0.3685446009389671" layoutX="347.0" layoutY="255.0" prefHeight="900.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="475.0">
                <children>
-                  <TextField fx:id="searchBar" layoutX="14.0" layoutY="14.0" promptText="Search" />
-                  <ListView fx:id="songResults" layoutX="18.0" layoutY="77.0" prefHeight="148.0" prefWidth="418.0">
+                  <TextField fx:id="searchBar" layoutX="14.0" layoutY="14.0" onAction="#handleSearch" promptText="Search" />
+                  <ListView fx:id="songResults" layoutX="18.0" layoutY="77.0" onMouseClicked="#handleSearchedSongSelected" prefHeight="148.0" prefWidth="418.0">
                      <contextMenu>
                         <ContextMenu>
                           <items>
-                            <MenuItem fx:id="addToPlaylist" mnemonicParsing="false" text="Add to Playlist" />
+                            <MenuItem fx:id="addToPlaylist" mnemonicParsing="false" onAction="#handleAddToPlaylist" text="Add to Playlist" />
                           </items>
                         </ContextMenu>
                      </contextMenu>
                   </ListView>
-                  <ListView fx:id="albumResults" layoutX="20.0" layoutY="267.0" prefHeight="160.0" prefWidth="418.0" />
+                  <ListView fx:id="albumResults" layoutX="20.0" layoutY="267.0" onMouseClicked="#handleSearchedAlbumSelected" prefHeight="160.0" prefWidth="418.0" />
                   <Text layoutX="18.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Songs">
                      <font>
                         <Font size="14.0" />
@@ -38,15 +38,15 @@
                         <Font size="14.0" />
                      </font>
                   </Text>
-                  <ListView fx:id="artistResults" layoutX="20.0" layoutY="469.0" prefHeight="166.0" prefWidth="418.0" />
+                  <ListView fx:id="artistResults" layoutX="20.0" layoutY="469.0" onMouseClicked="#handleSearchedArtistSelected" prefHeight="166.0" prefWidth="418.0" />
                   <Text layoutX="19.0" layoutY="464.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artists">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Text>
-                  <Button fx:id="createPlaylist" layoutX="182.0" layoutY="14.0" mnemonicParsing="false" text="Create Playlist" />
-                  <Button fx:id="uploadAlbum" layoutX="295.0" layoutY="14.0" mnemonicParsing="false" text="Upload Album" />
-                  <ListView fx:id="playlistResults" layoutX="19.0" layoutY="677.0" prefHeight="166.0" prefWidth="418.0" />
+                  <Button fx:id="createPlaylist" layoutX="182.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleCreatePlaylist" text="Create Playlist" />
+                  <Button fx:id="uploadAlbum" layoutX="295.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleUploadAlbum" text="Upload Album" />
+                  <ListView fx:id="playlistResults" layoutX="19.0" layoutY="677.0" onMouseClicked="#handleSearchedPlaylistSelected" prefHeight="166.0" prefWidth="418.0" />
                   <Text layoutX="18.0" layoutY="672.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Playlists">
                      <font>
                         <Font size="14.0" />
@@ -67,7 +67,7 @@
                         <Font size="14.0" />
                      </font>
                   </Text>
-                  <ListView fx:id="songList" layoutX="22.0" layoutY="306.0" prefHeight="500.0" prefWidth="761.0">
+                  <ListView fx:id="songList" layoutX="22.0" layoutY="306.0" onMouseClicked="#handleViewedSongSelected" prefHeight="500.0" prefWidth="761.0">
                      <contextMenu>
                         <ContextMenu>
                           <items>
@@ -76,7 +76,7 @@
                         </ContextMenu>
                      </contextMenu>
                   </ListView>
-                  <Button fx:id="playPause" layoutX="366.0" layoutY="826.0" mnemonicParsing="false" text="Play/Pause" />
+                  <Button fx:id="playPause" layoutX="366.0" layoutY="826.0" mnemonicParsing="false" onAction="#handlePlayPause" text="Play/Pause" />
                   <Text fx:id="songTime" layoutX="376.0" layoutY="871.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00 / 0:00" />
                </children>
             </AnchorPane>

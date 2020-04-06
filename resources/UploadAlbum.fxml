@@ -4,11 +4,11 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UploadAlbum">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.UploadAlbum">
    <children>
       <TextField fx:id="albumTitle" layoutX="76.0" layoutY="72.0" promptText="Album Title" />
-      <Button fx:id="uploadSongs" layoutX="104.0" layoutY="117.0" mnemonicParsing="false" text="Upload Songs" />
-      <Button fx:id="uploadCoverArt" layoutX="96.0" layoutY="160.0" mnemonicParsing="false" text="Upload Cover Art" />
-      <Button fx:id="submit" layoutX="123.0" layoutY="203.0" mnemonicParsing="false" text="Submit" />
+      <Button fx:id="uploadSongs" layoutX="104.0" layoutY="117.0" mnemonicParsing="false" onAction="#handleUploadSongs" text="Upload Songs" />
+      <Button fx:id="uploadCoverArt" layoutX="96.0" layoutY="160.0" mnemonicParsing="false" onAction="#handleUploadCoverArt" text="Upload Cover Art" />
+      <Button fx:id="submit" layoutX="123.0" layoutY="203.0" mnemonicParsing="false" onAction="#handleSubmit" text="Submit" />
    </children>
 </AnchorPane>
