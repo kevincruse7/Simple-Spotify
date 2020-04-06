@@ -1,170 +1,163 @@
-drop database if exists simple_spotify;
-create database simple_spotify;
-use simple_spotify;
+DROP DATABASE IF EXISTS simple_spotify;
+CREATE DATABASE simple_spotify;
+USE simple_spotify;
 
-drop table if exists users;
-create table users
+DROP TABLE IF EXISTS users;
+CREATE TABLE users
 (
-	username varchar(32) primary key,
-    pass varchar(32) not null
+	username VARCHAR(32) PRIMARY KEY,
+    pass VARCHAR(32) NOT NULL
 );
 
-drop table if exists playlists;
-create table playlists
+DROP TABLE IF EXISTS artists;
+CREATE TABLE artists
 (
-	playlist_id int primary key auto_increment,
-    title varchar(64) not null,
-    creator varchar(32) not null,
+	artist_id INT PRIMARY KEY AUTO_INCREMENT,
+    artist_name VARCHAR(64) NOT NULL
+);
+
+DROP TABLE IF EXISTS songs;
+CREATE TABLE songs
+(
+	song_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(64) NOT NULL,
+    length INT NOT NULL,
+    mp3 LONGBLOB NOT NULL
+);
+
+DROP TABLE IF EXISTS albums;
+CREATE TABLE albums
+(
+	album_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(64) NOT NULL,
+    release_year DATE NOT NULL,
+    cover MEDIUMBLOB NOT NULL
+);
+
+DROP TABLE IF EXISTS playlists;
+CREATE TABLE playlists
+(
+	playlist_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(64) NOT NULL,
+    creator VARCHAR(32) NOT NULL,
     
-    constraint playlist_creator
-		foreign key (creator)
-        references users (username)
-        on update restrict
-        on delete cascade
+    CONSTRAINT playlist_creator
+		FOREIGN KEY (creator)
+        REFERENCES users (username)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
 );
 
-drop table if exists genres;
-create table genres
+DROP TABLE IF EXISTS genres;
+CREATE TABLE genres
 (
-	genre_name varchar(64) primary key
+	genre_name VARCHAR(64) PRIMARY KEY
 );
 
-drop table if exists artists;
-create table artists
+DROP TABLE IF EXISTS artists_songs;
+CREATE TABLE artists_songs
 (
-	artist_id int primary key auto_increment,
-    artist_name varchar(64) not null,
-    username varchar(32),
+	artist_id INT NOT NULL,
+    song_id INT NOT NULL,
     
-    constraint ar_username
-		foreign key (username)
-        references users (username)
-        on update restrict
-        on delete cascade
+    CONSTRAINT ars_artist_id
+		FOREIGN KEY (artist_id)
+        REFERENCES artists (artist_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE,
+	CONSTRAINT ars_song_id
+		FOREIGN KEY (song_id)
+        REFERENCES songs (song_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
 );
 
-drop table if exists albums;
-create table albums
+DROP TABLE IF EXISTS songs_albums;
+CREATE TABLE songs_albums
 (
-	album_id int primary key auto_increment,
-    title varchar(64) not null,
-    release_year date not null,
-    cover mediumblob not null
-);
-
-drop table if exists songs;
-create table songs
-(
-	song_id int primary key auto_increment,
-    title varchar(64) not null,
-    length int not null,
-    mp3 longblob not null
-);
-
-drop table if exists playlists_songs;
-create table playlists_songs
-(
-	playlist_id int not null,
-    song_id int not null,
+	song_id INT NOT NULL,
+    album_id INT NOT NULL,
     
-    constraint ps_playlist_id
-		foreign key (playlist_id)
-        references playlists (playlist_id)
-        on update restrict
-        on delete cascade,
-	constraint ps_song_id
-		foreign key (song_id)
-        references songs (song_id)
-        on update restrict
-        on delete cascade
+    CONSTRAINT sal_song_id
+		FOREIGN KEY (song_id)
+        REFERENCES songs (song_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE,
+    CONSTRAINT sal_album_id
+		FOREIGN KEY (album_id)
+        REFERENCES albums (album_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
 );
 
-drop table if exists albums_songs;
-create table albums_songs
+DROP TABLE IF EXISTS songs_playlists;
+CREATE TABLE songs_playlists
 (
-	album_id int not null,
-    song_id int not null,
+	song_id INT NOT NULL,
+    playlist_id INT NOT NULL,
     
-    constraint als_album_id
-		foreign key (album_id)
-        references albums (album_id)
-        on update restrict
-        on delete cascade,
-	constraint als_song_id
-		foreign key (song_id)
-        references songs (song_id)
-        on update restrict
-        on delete cascade
+    CONSTRAINT sp_song_id
+		FOREIGN KEY (song_id)
+        REFERENCES songs (song_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE,
+    CONSTRAINT sp_playlist_id
+		FOREIGN KEY (playlist_id)
+        REFERENCES playlists (playlist_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
 );
 
-drop table if exists artists_songs;
-create table artists_songs
+DROP TABLE IF EXISTS artists_genres;
+CREATE TABLE artists_genres
 (
-	artist_id int not null,
-    song_id int not null,
+	artist_id INT NOT NULL,
+    genre_name VARCHAR(64) NOT NULL,
     
-    constraint ars_artist_id
-		foreign key (artist_id)
-        references artists (artist_id)
-        on update restrict
-        on delete cascade,
-	constraint ars_song_id
-		foreign key (song_id)
-        references songs (song_id)
-        on update restrict
-        on delete cascade
+    CONSTRAINT arg_artist_id
+		FOREIGN KEY (artist_id)
+        REFERENCES artists (artist_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE,
+    CONSTRAINT arg_genre_name
+		FOREIGN KEY (genre_name)
+        REFERENCES genres (genre_name)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
 );
 
-drop table if exists genres_songs;
-create table genres_songs
+DROP TABLE IF EXISTS songs_genres;
+CREATE TABLE songs_genres
 (
-	genre_name varchar(64) not null,
-    song_id int not null,
+	song_id INT NOT NULL,
+    genre_name VARCHAR(64) NOT NULL,
     
-    constraint gs_genre_name
-		foreign key (genre_name)
-        references genres (genre_name)
-        on update restrict
-        on delete cascade,
-	constraint gs_song_id
-		foreign key (song_id)
-        references songs (song_id)
-        on update restrict
-        on delete cascade
+    CONSTRAINT sg_song_id
+		FOREIGN KEY (song_id)
+        REFERENCES songs (song_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE,
+    CONSTRAINT sg_genre_name
+		FOREIGN KEY (genre_name)
+        REFERENCES genres (genre_name)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
 );
 
-drop table if exists genres_albums;
-create table genres_albums
+DROP TABLE IF EXISTS albums_genres;
+CREATE TABLE albums_genres
 (
-	genre_name varchar(64) not null,
-    album_id int not null,
+	album_id INT NOT NULL,
+    genre_name VARCHAR(64) NOT NULL,
     
-    constraint gal_genre_name
-		foreign key (genre_name)
-        references genres (genre_name)
-        on update restrict
-        on delete cascade,
-	constraint gal_album_id
-		foreign key (album_id)
-        references albums (album_id)
-        on update restrict
-        on delete cascade
-);
-
-drop table if exists genres_artists;
-create table genres_artists
-(
-	genre_name varchar(64) not null,
-    artist_id int not null,
-    
-    constraint gar_genre_name
-		foreign key (genre_name)
-        references genres (genre_name)
-        on update restrict
-        on delete cascade,
-	constraint gar_artist_id
-		foreign key (artist_id)
-        references artists (artist_id)
-        on update restrict
-        on delete cascade
+    CONSTRAINT alg_album_id
+		FOREIGN KEY (album_id)
+        REFERENCES albums (album_id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE,
+    CONSTRAINT alg_genre_name
+		FOREIGN KEY (genre_name)
+        REFERENCES genres (genre_name)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
 );
