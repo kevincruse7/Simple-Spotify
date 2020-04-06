@@ -71,7 +71,7 @@ public class Database {
     /**
      * Adds the given song to the user's current playlist.
      */
-    public void addToPlaylist(Song song) {
+    public void addToPlaylist(Playlist playlist, Song song) {
 
     }
 
