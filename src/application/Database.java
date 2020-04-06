@@ -10,34 +10,68 @@ import data.Song;
  * Database interaction handler for Simple Spotify client.
  */
 public class Database {
-    private static String user;
+    private String user;
 
+    public Database(String username, String password) {
+        this.setUser(username, password);
+    }
+
+    public Database() {
+        this.user = null;
+    }
+    
+    /**
+     * Determines if the given login credentials exist in the database.
+     */
+    public boolean isValidCredentials(String username, String password) {
+        return false;
+    }
+    
     /**
      * Sets the session user to the one associated with the given login credentials. If the credentials are invalid, an
      * IllegalArgumentException is thrown.
      */
-    public static void setUser(String username, String password) throws IllegalArgumentException {
-        Database.user = username;
+    public void setUser(String username, String password) throws IllegalArgumentException {
+        if (this.isValidCredentials(username, password)) {
+            this.user = username;
+        }
+        else {
+            throw new IllegalArgumentException("Invalid login credentials");
+        }
     }
 
     /**
      * Gets the current session user.
      */
-    public static String getUser() {
-        return Database.user;
+    public String getUser() {
+        return this.user;
     }
 
     /**
-     * Adds the song indicated by the given song title to the user's current playlist.
+     * Adds the given login credentials to the database.
      */
-    public static void addToPlaylist(String songTitle) {
+    public void addUser(String username, String password) {
 
+    }
+
+    /**
+     * Uploads the given album to the database.
+     */
+    public void uploadAlbum(Album album) {
+        
     }
 
     /**
      * Creates a playlist by the current user with the given title.
      */
-    public static void createPlaylist(String title) {
+    public void createPlaylist(String title) {
+
+    }
+    
+    /**
+     * Adds the given song to the user's current playlist.
+     */
+    public void addToPlaylist(Song song) {
 
     }
 
@@ -49,37 +83,30 @@ public class Database {
     }
 
     /**
-     * Populates the given album with song data from the database.
+     * Populates the given song with stream data from the database.
      */
-    public static void populateWithData(Album album) {
-        
-    }
+    public void populateWithData(Song song) {
 
+    }
+    
     /**
      * Populates the given artist with song data from the database.
      */
-    public static void populateWithData(Artist artist) {
+    public void populateWithData(Artist artist) {
 
+    }
+    
+    /**
+     * Populates the given album with song data from the database.
+     */
+    public void populateWithData(Album album) {
+        
     }
 
     /**
      * Populates the given playlist with song data from the database.
      */
-    public static void populateWithData(Playlist playlist) {
+    public void populateWithData(Playlist playlist) {
 
-    }
-
-    /**
-     * Populates the given song with stream data from the database.
-     */
-    public static void populateWithData(Song song) {
-
-    }
-
-    /**
-     * Uploads the given album to the database.
-     */
-    public static void uploadAlbum(Album album) {
-        
     }
 }

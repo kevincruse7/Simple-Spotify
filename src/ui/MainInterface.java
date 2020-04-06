@@ -28,60 +28,60 @@ public class MainInterface {
     @FXML private Text songTime;
 
     @FXML
-    void handleAddToPlaylist(ActionEvent event) {
-        // Database
-        // public static void addToPlaylist(String songTitle)
+    void handleUploadAlbum(ActionEvent event) {
+        // Display album dialog
     }
-
+    
     @FXML
     void handleCreatePlaylist(ActionEvent event) {
         // Display create playlist dialog
     }
-
+    
     @FXML
-    void handlePlayPause(ActionEvent event) {
-        // SongPlayer
-        // public static void togglePause()
+    void handleAddToPlaylist(ActionEvent event) {
+        // Database
+        // public void addToPlaylist(Song song)
     }
 
     @FXML
     void handleSearch(ActionEvent event) {
         // Database
-        // public static SearchResult search(String query)
-    }
-
-    @FXML
-    void handleSearchedAlbumSelected(MouseEvent event) {
-        // Database
-        // public static void populateWithData(Album album)
-    }
-
-    @FXML
-    void handleSearchedArtistSelected(MouseEvent event) {
-        // Database
-        // public static void populateWithData(Artist artist)
-    }
-
-    @FXML
-    void handleSearchedPlaylistSelected(MouseEvent event) {
-        // Database
-        // public static void populateWithData(Playlist playlist)
+        // public SearchResult search(String query)
     }
 
     @FXML
     void handleSearchedSongSelected(MouseEvent event) {
         // Database
-        // public static void populateWithData(Song song)
+        // public void populateWithData(Song song)
+    }
+    
+    @FXML
+    void handleSearchedArtistSelected(MouseEvent event) {
+        // Database
+        // public void populateWithData(Artist artist)
+    }
+    
+    @FXML
+    void handleSearchedAlbumSelected(MouseEvent event) {
+        // Database
+        // public void populateWithData(Album album)
     }
 
     @FXML
-    void handleUploadAlbum(ActionEvent event) {
-        // Display album dialog
+    void handleSearchedPlaylistSelected(MouseEvent event) {
+        // Database
+        // public void populateWithData(Playlist playlist)
     }
 
     @FXML
     void handleViewedSongSelected(MouseEvent event) {
         // SongPlayer
-        // public static void setQueue(List<Song> songs)
+        // public void setQueue(List<Song> songs)
+    }
+
+    @FXML
+    void handlePlayPause(ActionEvent event) {
+        // SongPlayer
+        // public void togglePause()
     }
 }

@@ -12,6 +12,6 @@ public class CreatePlaylist {
     @FXML
     void handleSubmit(ActionEvent event) {
         // Database
-        // public static void createPlaylist(String title)
+        // public void createPlaylist(String title)
     }
 }

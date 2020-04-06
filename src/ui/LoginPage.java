@@ -15,6 +15,8 @@ public class LoginPage {
 
     @FXML
     void handleLogin(ActionEvent event) {
-        // public static void setUser(String username, String password) throws IllegalArgumentException
+        // public boolean isValidCredentials(String username, String password)
+        // public void setUser(String username, String password) throws IllegalArgumentException
+        // public void addUser(String username, String password)
     }
 }

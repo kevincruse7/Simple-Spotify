@@ -13,13 +13,17 @@ public class Artist {
     public Artist(String name, List<String> genres, List<Song> songs) {
         this.name = name;
         this.genres = genres;
-        this.songs = songs;
+        this.setSongs(songs);
     }
 
     public Artist(String name, List<String> genres) {
         this(name, genres, null);
     }
 
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+    }
+    
     public String getName() {
         return this.name;
     }
@@ -30,9 +34,5 @@ public class Artist {
 
     public List<Song> getSongs() {
         return this.songs;
-    }
-
-    public void setSongs(List<Song> songs) {
-        this.songs = songs;
     }
 }

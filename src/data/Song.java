@@ -22,13 +22,17 @@ public class Song {
         this.genres = genres;
         this.releaseYear = releaseYear;
         this.length = length;
-        this.stream = stream;
+        this.setStream(stream);
     }
 
     public Song(String title, Album album, List<Artist> artists, List<String> genres, int releaseYear, int length) {
         this(title, album, artists, genres, releaseYear, length, null);
     }
 
+    public void setStream(InputStream stream) {
+        this.stream = stream;
+    }
+    
     public String getTitle() {
         return this.title;
     }
@@ -55,9 +59,5 @@ public class Song {
 
     public InputStream getStream() {
         return this.stream;
-    }
-
-    public void setStream(InputStream stream) {
-        this.stream = stream;
     }
 }

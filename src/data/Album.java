@@ -19,14 +19,22 @@ public class Album {
         this.artists = artists;
         this.genres = genres;
         this.releaseYear = releaseYear;
-        this.cover = cover;
-        this.songs = songs;
+        this.setCover(cover);
+        this.setSongs(songs);
     }
 
     public Album(String title, List<Artist> artists, List<String> genres, int releaseYear) {
         this(title, artists, genres, releaseYear, null, null);
     }
 
+    public void setCover(InputStream cover) {
+        this.cover = cover;
+    }
+    
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+    }
+    
     public String getTitle() {
         return this.title;
     }
@@ -49,13 +57,5 @@ public class Album {
     
     public List<Song> getSongs() {
         return this.songs;
-    }
-
-    public void setCover(InputStream cover) {
-        this.cover = cover;
-    }
-    
-    public void setSongs(List<Song> songs) {
-        this.songs = songs;
     }
 }

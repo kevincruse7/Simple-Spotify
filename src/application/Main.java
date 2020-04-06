@@ -15,6 +15,12 @@ public class Main extends Application {
         Application.launch(args);
     }
 
+    public static void exitWithException(Exception e, String action) {
+        System.err.println("Exception when " + action + ":");
+        e.printStackTrace();
+        System.exit(1);
+    }
+
     @Override
     public void start(Stage primaryStage) {
         FXMLLoader loader = new FXMLLoader();
@@ -25,9 +31,7 @@ public class Main extends Application {
             loginPageStream = new FileInputStream(loginPagePath);
         }
         catch (FileNotFoundException e) {
-            System.err.println("Exception when reading FXML files:");
-            e.printStackTrace();
-            System.exit(1);
+            Main.exitWithException(e, "reading FXML files");
         }
 
         AnchorPane root = null;
@@ -35,9 +39,7 @@ public class Main extends Application {
             root = loader.<AnchorPane>load(loginPageStream);
         }
         catch (IOException e) {
-            System.err.println("Exception when loading FXML files:");
-            e.printStackTrace();
-            System.exit(2);
+            Main.exitWithException(e, "loading FXML files");
         }
 
         Scene scene = new Scene(root);

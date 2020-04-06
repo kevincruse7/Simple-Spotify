@@ -12,18 +12,18 @@ public class UploadAlbum {
     @FXML private Button submit;
 
     @FXML
-    void handleSubmit(ActionEvent event) {
-        // Database
-        // public staic void uploadAlbum(Album album)
+    void handleUploadSongs(ActionEvent event) {
+
     }
 
     @FXML
     void handleUploadCoverArt(ActionEvent event) {
 
     }
-
+    
     @FXML
-    void handleUploadSongs(ActionEvent event) {
-
+    void handleSubmit(ActionEvent event) {
+        // Database
+        // public void uploadAlbum(Album album)
     }
 }
