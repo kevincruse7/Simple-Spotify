@@ -12,8 +12,7 @@ CREATE TABLE users
 DROP TABLE IF EXISTS artists;
 CREATE TABLE artists
 (
-    artist_id INT PRIMARY KEY AUTO_INCREMENT,
-    artist_name VARCHAR(64) NOT NULL
+    artist_name VARCHAR(64) PRIMARY KEY
 );
 
 DROP TABLE IF EXISTS songs;
@@ -57,12 +56,12 @@ CREATE TABLE genres
 DROP TABLE IF EXISTS artists_songs;
 CREATE TABLE artists_songs
 (
-    artist_id INT NOT NULL,
+    artist_name VARCHAR(64) NOT NULL,
     song_id INT NOT NULL,
     
-    CONSTRAINT ars_artist_id
-        FOREIGN KEY (artist_id)
-        REFERENCES artists (artist_id)
+    CONSTRAINT ars_artist_name
+        FOREIGN KEY (artist_name)
+        REFERENCES artists (artist_name)
         ON UPDATE RESTRICT
         ON DELETE CASCADE,
     CONSTRAINT ars_song_id
@@ -111,12 +110,12 @@ CREATE TABLE songs_playlists
 DROP TABLE IF EXISTS artists_genres;
 CREATE TABLE artists_genres
 (
-    artist_id INT NOT NULL,
+    artist_name VARCHAR(64) NOT NULL,
     genre_name VARCHAR(64) NOT NULL,
     
-    CONSTRAINT arg_artist_id
-        FOREIGN KEY (artist_id)
-        REFERENCES artists (artist_id)
+    CONSTRAINT arg_artist_name
+        FOREIGN KEY (artist_name)
+        REFERENCES artists (artist_name)
         ON UPDATE RESTRICT
         ON DELETE CASCADE,
     CONSTRAINT arg_genre_name
