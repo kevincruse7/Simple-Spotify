@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Song {
     // Song metadata
+    private int id;
     private String title;
     private Album album;
     private List<Artist> artists;
@@ -15,7 +16,8 @@ public class Song {
     // Song data
     private InputStream stream;
 
-    public Song(String title, Album album, List<Artist> artists, List<String> genres, int releaseYear, int length, InputStream stream) {
+    public Song(int id, String title, Album album, List<Artist> artists, List<String> genres, int releaseYear, int length, InputStream stream) {
+        this.setID(id);
         this.title = title;
         this.album = album;
         this.artists = artists;
@@ -25,12 +27,24 @@ public class Song {
         this.setStream(stream);
     }
 
-    public Song(String title, Album album, List<Artist> artists, List<String> genres, int releaseYear, int length) {
-        this(title, album, artists, genres, releaseYear, length, null);
+    public Song(String title, Album album, List<Artist> artists, List<String> genres, int releaseYear, int length, InputStream stream) {
+        this(-1, title, album, artists, genres, releaseYear, length, stream);
     }
 
+    public Song(int id, String title, Album album, List<Artist> artists, List<String> genres, int releaseYear, int length) {
+        this(id, title, album, artists, genres, releaseYear, length, null);
+    }
+
+    public void setID(int id) {
+        this.id = id;
+    }
+    
     public void setStream(InputStream stream) {
         this.stream = stream;
+    }
+
+    public int getID() {
+        return this.id;
     }
     
     public String getTitle() {
