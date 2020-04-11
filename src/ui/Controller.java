@@ -28,12 +28,16 @@ public class Controller {
         switch (alertType) {
             case CONFIRMATION:
                 alert.setTitle("Confirmation Dialog");
+                break;
             case ERROR:
                 alert.setTitle("Error Dialog");
+                break;
             case INFORMATION:
                 alert.setTitle("Information Dialog");
+                break;
             case NONE:
                 alert.setTitle("Dialog");
+                break;
             case WARNING:
                 alert.setTitle("Warning Dialog");
         }

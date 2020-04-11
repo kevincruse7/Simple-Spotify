@@ -33,6 +33,11 @@ public class Album {
         this(id, title, artists, genres, releaseYear, null, null);
     }
 
+    @Override
+    public String toString() {
+        return this.getTitle() + " - " + this.getArtists().toString() + " - " + Integer.toString(this.getReleaseYear());
+    }
+    
     public void setID(int id) {
         this.id = id;
     }

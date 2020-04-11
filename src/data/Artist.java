@@ -20,6 +20,11 @@ public class Artist {
         this(name, genres, null);
     }
 
+    @Override
+    public String toString() {
+        return this.getName();
+    }
+
     public void setSongs(List<Song> songs) {
         this.songs = songs;
     }

@@ -35,6 +35,12 @@ public class Song {
         this(id, title, album, artists, genres, releaseYear, length, null);
     }
 
+    @Override
+    public String toString() {
+        return this.getTitle() + " - " + this.getArtists().toString() + " - " + this.getAlbum().getTitle() + " - "
+                + Integer.toString(this.getReleaseYear());
+    }
+
     public void setID(int id) {
         this.id = id;
     }

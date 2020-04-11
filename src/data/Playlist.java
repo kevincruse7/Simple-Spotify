@@ -26,6 +26,11 @@ public class Playlist {
         this(id, title, creator, null);
     }
 
+    @Override
+    public String toString() {
+        return this.getTitle() + " - " + this.getCreator();
+    }
+
     public void setID(int id) {
         this.id = id;
     }

@@ -63,6 +63,14 @@ public class Main extends Application {
         stage.show();
     }
 
+    @Override
+    /**
+     * Stops the JavaFX application
+     */
+    public void stop() {
+        this.database.close();
+    }
+
     /**
      * Exits program with an error code, printing given exception stack trace and action being performed at time of exception
      */

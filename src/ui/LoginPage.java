@@ -1,7 +1,5 @@
 package ui;
 
-import application.Database;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -23,35 +21,27 @@ public class LoginPage extends Controller {
     @FXML
     // Login to the database when the login button is pressed
     private void handleLogin(ActionEvent event) {
-        // Application references
-        Database database = super.getMain().getDatabase();
-        
-        // User interface references
         Stage stage = super.getMain().getStage();
         Scene mainInterfaceScene = super.getMain().getMainInterface().getScene();
         
-        // Get text entered by user
+        // Get user credentials
         String username = this.username.getText();
         String password = this.password.getText();
 
-        // Check if the given user exists in the database
-        if (database.userExists(username)) {
-            // If the user exists, check if the password is correct
-            if (database.isValidCredentials(username, password)) {
-                // If the password is correct, set the user and login
-                database.setUser(username, password);
-                stage.setScene(mainInterfaceScene);
-            }
-            else {
-                // If the password is incorrect, notify the user
-                super.alert(AlertType.ERROR, "Incorrect password!");
-            }
+        // Check credentials with database
+        String credentialCheck = super.getMain().getDatabase().login(username, password);
+        if (credentialCheck.equals("MATCH")) {
+            // If credentials match, display the main interface
+            stage.setScene(mainInterfaceScene);
         }
-        else {
-            // If the user does not exist in the database, create a new user and login
-            database.addUser(username, password);
+        else if (credentialCheck.equals("NEW")) {
+            // If credentials indicate a new user, notify such and display the main interface
             super.alert(AlertType.INFORMATION, "User \'" + username + "\' created!");
             stage.setScene(mainInterfaceScene);
+        }
+        else {
+            // Otherwise, if credentials don't match, notify the user
+            super.alert(AlertType.ERROR, "Incorrect password!");
         }
     }
 }
