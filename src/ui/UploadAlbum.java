@@ -5,7 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class UploadAlbum {
+public class UploadAlbum extends Controller {
     @FXML private TextField albumTitle;
     @FXML private Button uploadSongs;
     @FXML private Button uploadCoverArt;

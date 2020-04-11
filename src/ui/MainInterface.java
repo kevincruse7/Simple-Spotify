@@ -1,7 +1,7 @@
 package ui;
 
-import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -10,37 +10,55 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
-public class MainInterface {
-    @FXML private TextField searchBar;
-    @FXML private ListView<String> songResults;
-    @FXML private MenuItem addToPlaylist;
-    @FXML private ListView<String> albumResults;
-    @FXML private ListView<String> artistResults;
-    @FXML private Button createPlaylist;
+public class MainInterface extends Controller {
+    @FXML private TextField search;
+    @FXML private Button changePassword;
     @FXML private Button uploadAlbum;
-    @FXML private ListView<String> playlistResults;
-    @FXML private ImageView albumCover;
+    @FXML private Button createPlaylist;
+    @FXML private ListView<?> searchedSongs;
+    @FXML private MenuItem addToPlaylist;
+    @FXML private ListView<?> searchedArtists;
+    @FXML private ListView<?> searchedAlbums;
+    @FXML private ListView<?> searchedPlaylists;
+    @FXML private ImageView cover;
     @FXML private Text title;
-    @FXML private Text info;
-    @FXML private ListView<String> songList;
-    @FXML private MenuItem removeFromPlaylist;
+    @FXML private Text subtitle;
+    @FXML private Button deletePlaylist;
+    @FXML private ListView<?> viewedSongs;
+    @FXML private MenuItem deleteFromPlaylist;
     @FXML private Button playPause;
     @FXML private Text songTime;
 
     @FXML
-    void handleUploadAlbum(ActionEvent event) {
-        // Display album dialog
+    void handleAddToPlaylist(ActionEvent event) {
+        // Database
+        // public void addToPlaylist(Song song)
     }
-    
+
+    @FXML
+    void handleChangePassword(ActionEvent event) {
+
+    }
+
     @FXML
     void handleCreatePlaylist(ActionEvent event) {
         // Display create playlist dialog
     }
-    
+
     @FXML
-    void handleAddToPlaylist(ActionEvent event) {
-        // Database
-        // public void addToPlaylist(Song song)
+    void handleDeleteFromPlaylist(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleDeletePlaylist(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handlePlayPause(ActionEvent event) {
+        // SongPlayer
+        // public void togglePause()
     }
 
     @FXML
@@ -50,21 +68,15 @@ public class MainInterface {
     }
 
     @FXML
-    void handleSearchedSongSelected(MouseEvent event) {
+    void handleSearchedAlbumSelected(MouseEvent event) {
         // Database
-        // public void populateWithData(Song song)
+        // public void populateWithData(Album album)
     }
-    
+
     @FXML
     void handleSearchedArtistSelected(MouseEvent event) {
         // Database
         // public void populateWithData(Artist artist)
-    }
-    
-    @FXML
-    void handleSearchedAlbumSelected(MouseEvent event) {
-        // Database
-        // public void populateWithData(Album album)
     }
 
     @FXML
@@ -74,14 +86,19 @@ public class MainInterface {
     }
 
     @FXML
-    void handleViewedSongSelected(MouseEvent event) {
-        // SongPlayer
-        // public void setQueue(List<Song> songs)
+    void handleSearchedSongSelected(MouseEvent event) {
+        // Database
+        // public void populateWithData(Song song)
     }
 
     @FXML
-    void handlePlayPause(ActionEvent event) {
+    void handleUploadAlbum(ActionEvent event) {
+        // Display album dialog
+    }
+
+    @FXML
+    void handleViewedSongSelected(MouseEvent event) {
         // SongPlayer
-        // public void togglePause()
+        // public void setQueue(List<Song> songs)
     }
 }

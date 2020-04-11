@@ -10,14 +10,25 @@ import data.Song;
  * Database interaction handler for Simple Spotify client.
  */
 public class Database {
+    private Main main;
     private String user;
 
-    public Database(String username, String password) {
-        this.setUser(username, password);
+    public Database(Main main) {
+        this.main = main;
+    }
+    
+    /**
+     * Determines if the given user exists in the database.
+     */
+    public boolean userExists(String username) {
+        return false;
     }
 
-    public Database() {
-        this.user = null;
+    /**
+     * Adds the given login credentials to the database.
+     */
+    public void addUser(String username, String password) {
+
     }
     
     /**
@@ -45,13 +56,6 @@ public class Database {
      */
     public String getUser() {
         return this.user;
-    }
-
-    /**
-     * Adds the given login credentials to the database.
-     */
-    public void addUser(String username, String password) {
-
     }
 
     /**
