@@ -7,11 +7,13 @@ import ui.LoginPage;
 import ui.MainInterface;
 import ui.UploadAlbum;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -55,6 +57,7 @@ public class Main extends Application {
         this.changePassword = this.loadInterface("resources/ChangePassword.fxml");
         this.uploadAlbum = this.loadInterface("resources/UploadAlbum.fxml");
         this.createPlaylist = this.loadInterface("resources/CreatePlaylist.fxml");
+        this.songPlayer.startSongTimer();
 
         // Initialize JavaFX stage
         stage.setScene(this.getLoginPage().getScene());
@@ -69,6 +72,29 @@ public class Main extends Application {
      */
     public void stop() {
         this.database.close();
+        this.songPlayer.stopSongTimer();
+
+        this.database = null;
+        this.songPlayer = null;
+        this.stage = null;
+        this.loginPage = null;
+        this.mainInterface = null;
+        this.changePassword = null;
+        this.uploadAlbum = null;
+        this.createPlaylist = null;
+        System.gc();
+        
+        File[] files = new File("cache/").listFiles();
+        for (File file : files) {
+            file.delete();
+        }
+    }
+
+    /**
+     * Runs the given runnable on the JavaFX application thread
+     */
+    public void runLater(Runnable toRun) {
+        Platform.runLater(toRun);
     }
 
     /**

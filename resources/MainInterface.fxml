@@ -87,7 +87,7 @@
                   </VBox>
                </children>
             </HBox>
-            <ListView fx:id="viewedSongs" onMouseClicked="#handleViewedSongSelected" prefHeight="421.0">
+            <ListView fx:id="viewedSongs" prefHeight="421.0">
                <contextMenu>
                   <ContextMenu>
                     <items>

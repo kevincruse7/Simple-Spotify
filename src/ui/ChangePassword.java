@@ -2,6 +2,7 @@ package ui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
@@ -15,8 +16,20 @@ public class ChangePassword extends Controller {
     private Stage stage;
 
     @FXML
-    void handleSubmit(ActionEvent event) {
-        
+    private void handleSubmit(ActionEvent event) {
+        String currentPassword = this.currentPassword.getText();
+        String newPassword = this.newPassword.getText();
+
+        if (this.getMain().getDatabase().changePassword(currentPassword, newPassword)) {
+            super.alert(this.stage, AlertType.INFORMATION, "Password updated!");
+            this.stage.close();
+        }
+        else {
+            super.alert(this.stage, AlertType.ERROR, "Current password incorrect!");
+        }
+
+        this.currentPassword.setText("");
+        this.newPassword.setText("");
     }
 
     public void setStage(Stage stage) {

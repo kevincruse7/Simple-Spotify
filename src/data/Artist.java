@@ -3,26 +3,26 @@ package data;
 import java.util.List;
 
 public class Artist {
-    // Artist metadata
     private String name;
     private List<String> genres;
-
-    // Artist data
     private List<Song> songs;
 
-    public Artist(String name, List<String> genres, List<Song> songs) {
-        this.name = name;
-        this.genres = genres;
-        this.setSongs(songs);
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Artist && this.name.equals(((Artist)o).getName());
     }
-
-    public Artist(String name, List<String> genres) {
-        this(name, genres, null);
-    }
-
+    
     @Override
     public String toString() {
-        return this.getName();
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
     }
 
     public void setSongs(List<Song> songs) {

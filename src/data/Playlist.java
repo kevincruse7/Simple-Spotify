@@ -3,29 +3,16 @@ package data;
 import java.util.List;
 
 public class Playlist {
-    // Playlist metadata
     private int id;
     private String title;
     private String creator;
-
-    // Playlist data
     private List<Song> songs;
 
-    public Playlist(int id, String title, String creator, List<Song> songs) {
-        this.setID(id);
-        this.title = title;
-        this.creator = creator;
-        this.setSongs(songs);
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Playlist && this.id == ((Playlist)o).getID();
     }
-
-    public Playlist(String title, String creator, List<Song> songs) {
-        this(-1, title, creator, songs);
-    }
-
-    public Playlist(int id, String title, String creator) {
-        this(id, title, creator, null);
-    }
-
+    
     @Override
     public String toString() {
         return this.getTitle() + " - " + this.getCreator();
@@ -33,6 +20,14 @@ public class Playlist {
 
     public void setID(int id) {
         this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
     
     public void setSongs(List<Song> songs) {
