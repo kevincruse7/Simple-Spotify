@@ -517,30 +517,29 @@ public class Database {
             Album album = new Album();
             album.setTitle(selectResultSet.getString("albums.title"));
             song.setAlbum(album);
-            
-            song.setArtists(new ArrayList<Artist>());
-            Artist artist = new Artist();
-            artist.setName(selectResultSet.getString("artists_songs.artist_name"));
-            song.getArtists().add(artist);
 
             if (!outputFile.exists()) {
                 // Read in stream data to buffer
                 InputStream inputStream = selectResultSet.getBinaryStream("songs.stream");
                 byte[] buffer = new byte[inputStream.available()];
                 inputStream.read(buffer);
-
-                while (selectResultSet.next()) {
-                    artist = new Artist();
-                    artist.setName(selectResultSet.getString("artists_songs.artist_name"));
-                    song.getArtists().add(artist);
-                }
-
                 inputStream.close();
 
                 // Write out stream data to MP3 file
                 FileOutputStream outputStream = new FileOutputStream(outputFile);
                 outputStream.write(buffer);
                 outputStream.close();
+            }
+
+            song.setArtists(new ArrayList<Artist>());
+            Artist artist = new Artist();
+            artist.setName(selectResultSet.getString("artists_songs.artist_name"));
+            song.getArtists().add(artist);
+            
+            while (selectResultSet.next()) {
+                artist = new Artist();
+                artist.setName(selectResultSet.getString("artists_songs.artist_name"));
+                song.getArtists().add(artist);
             }
 
             // Close database connections
@@ -577,7 +576,6 @@ public class Database {
             this.main.exitWithException(e, "populating artist data");
         }
 
-        Collections.sort(songs);
         artist.setSongs(songs);
     }
 
@@ -603,11 +601,6 @@ public class Database {
             Statement selectSongs = this.conn.createStatement();
             ResultSet selectSongsResultSet = selectSongs.executeQuery(query);
             selectSongsResultSet.next();
-
-            Song song = new Song();
-            song.setID(selectSongsResultSet.getInt(1));
-            this.populateWithData(song);
-            songs.add(song);
             
             if (!outputFile.exists()) {
                 InputStream inputStream = selectSongsResultSet.getBinaryStream("albums.cover");
@@ -620,6 +613,11 @@ public class Database {
                 outputStream.close();
             }
                 
+            Song song = new Song();
+            song.setID(selectSongsResultSet.getInt("songs.song_id"));
+            this.populateWithData(song);
+            songs.add(song);
+            
             while (selectSongsResultSet.next()) {
                 song = new Song();
                 song.setID(selectSongsResultSet.getInt(1));

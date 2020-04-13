@@ -2,7 +2,6 @@ package application;
 
 import data.Song;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.media.Media;
@@ -16,12 +15,14 @@ public class SongPlayer {
 
     public SongPlayer(Main main) {
         this.main = main;
-        this.songQueue = new ArrayList<Song>();
+        this.songQueue = null;
+        this.songTimerEnabled = false;
+        this.mediaPlayer = null;
     }
 
     @Override
     public String toString() {
-        if (this.mediaPlayer != null && this.songQueue.size() > 0) {
+        if (this.mediaPlayer != null && this.songQueue != null && this.songQueue.size() > 0) {
             double currentTime = this.mediaPlayer.getCurrentTime().toSeconds();
             double stopTime = this.mediaPlayer.getStopTime().toSeconds();
 
@@ -66,11 +67,15 @@ public class SongPlayer {
     }
 
     public void play() {
-        this.mediaPlayer.play();
+        if (this.mediaPlayer != null) {
+            this.mediaPlayer.play();
+        }
     }
 
     public void pause() {
-        this.mediaPlayer.pause();
+        if (this.mediaPlayer != null) {
+            this.mediaPlayer.pause();
+        }
     }
 
     public void setSongQueue(List<Song> songQueue) {
@@ -80,7 +85,7 @@ public class SongPlayer {
             this.mediaPlayer.dispose();
         }
         
-        if (this.songQueue.size() > 0) {
+        if (this.songQueue != null && this.songQueue.size() > 0) {
             this.initMediaPlayer();
         } else {
             this.main.getMainInterface().disablePlayPause();

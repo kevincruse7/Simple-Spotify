@@ -59,6 +59,12 @@ public class Main extends Application {
         this.createPlaylist = this.loadInterface("resources/CreatePlaylist.fxml");
         this.songPlayer.startSongTimer();
 
+        // Create cache folder for songs and covers retrieved from the database, if it does not already exist
+        File cache = new File("cache/");
+        if (!cache.exists()) {
+            cache.mkdir();
+        }
+
         // Initialize JavaFX stage
         stage.setScene(this.getLoginPage().getScene());
         stage.setTitle("Simple Spotify");

@@ -136,11 +136,13 @@ public class MainInterface extends Controller {
         if (super.alert(AlertType.CONFIRMATION, "Are you sure?")) {
             Playlist selectedPlaylist = this.searchedPlaylists.getSelectionModel().getSelectedItem();
             super.getMain().getDatabase().deletePlaylist(selectedPlaylist);
-
-            this.deletePlaylist.disableProperty().set(true);
-            this.searchedPlaylists.getItems().remove(selectedPlaylist);
+            super.getMain().getSongPlayer().setSongQueue(null);
+            
             this.title.setText("Artist/Album/Playlist");
             this.subtitle.setText("Creators/Release Year");
+            this.deletePlaylist.disableProperty().set(true);
+            this.viewedSongs.setItems(null);
+            this.searchedPlaylists.getItems().remove(selectedPlaylist);
         }
     }
 
@@ -150,7 +152,18 @@ public class MainInterface extends Controller {
         Playlist selectedPlaylist = this.searchedPlaylists.getSelectionModel().getSelectedItem();
 
         if (super.getMain().getDatabase().addToPlaylist(selectedSong, selectedPlaylist).equals("CONNECTION CREATED")) {
+            if (selectedSong.getFile() == null) {
+                super.getMain().getDatabase().populateWithData(selectedSong);
+            }
+            
+            selectedPlaylist.getSongs().add(selectedSong);
+            ArrayList<Song> songQueue = new ArrayList<Song>(selectedPlaylist.getSongs());
+            this.getMain().getSongPlayer().setSongQueue(songQueue);
+            
             this.viewedSongs.getItems().add(selectedSong);
+            this.playPause.setText("Play");
+        } else {
+            super.alert(AlertType.ERROR, "Song already exists in this playlist!");
         }
     }
     
@@ -159,12 +172,14 @@ public class MainInterface extends Controller {
         Song selectedSong = this.viewedSongs.getSelectionModel().getSelectedItem();
         Playlist selectedPlaylist = this.searchedPlaylists.getSelectionModel().getSelectedItem();
 
-        if (super.getMain().getDatabase().removeFromPlaylist(selectedSong, selectedPlaylist).equals("CONNECTION DELETED")) {
+        if (selectedSong != null && super.getMain().getDatabase().removeFromPlaylist(selectedSong, selectedPlaylist)
+                .equals("CONNECTION DELETED")) {
+            this.viewedSongs.getItems().remove(selectedSong);
+            this.playPause.setText("Play");
+            
             selectedPlaylist.getSongs().remove(selectedSong);
             ArrayList<Song> songQueue = new ArrayList<Song>(selectedPlaylist.getSongs());
             this.getMain().getSongPlayer().setSongQueue(songQueue);
-
-            this.viewedSongs.getItems().remove(selectedSong);
         }
     }
 
