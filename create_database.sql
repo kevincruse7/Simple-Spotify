@@ -1,3 +1,12 @@
+-- SQL script for creating Simple Spotify database
+
+-- Kevin Cruse & Jacob Shell
+-- 4/12/20
+
+-- Uncomment and run this command if you get an error regarding maximum packet size
+-- SET GLOBAL max_allowed_packet=1024*1024*1024;
+
+
 DROP DATABASE IF EXISTS simple_spotify;
 CREATE DATABASE simple_spotify;
 USE simple_spotify;
@@ -265,8 +274,9 @@ END//
 DELIMITER ;
 
 
--- Changes given user's password if the given current password matches the actual current password. Selects 'MATCH' if the current passwords match and the operation is successful.
--- Selects 'NO MATCH' if the current passwords don't match and 'NO USER' if the given username does not exist
+-- Changes given user's password if the given current password matches the actual current password. Selects 'MATCH' if the
+-- current passwords match and the operation is successful. Selects 'NO MATCH' if the current passwords don't match and
+-- 'NO USER' if the given username does not exist
 DROP PROCEDURE IF EXISTS change_password;
 DELIMITER //
 CREATE PROCEDURE change_password
@@ -290,7 +300,8 @@ END//
 DELIMITER ;
 
 
--- Adds the given album to the database and selects the internal ID for this album. If the album already exists, selects 'ALBUM ALREADY EXISTS'
+-- Adds the given album to the database and selects the internal ID for this album. If the album already exists, selects
+-- 'ALBUM ALREADY EXISTS'
 DROP PROCEDURE IF EXISTS add_album;
 DELIMITER //
 CREATE PROCEDURE add_album
@@ -300,9 +311,17 @@ CREATE PROCEDURE add_album
     cover MEDIUMBLOB
 )
 BEGIN
-    IF NOT EXISTS (SELECT * FROM albums WHERE albums.title = title AND albums.release_year = release_year AND albums.cover = cover) THEN
+    IF NOT EXISTS (
+        SELECT * FROM albums
+        WHERE albums.title = title
+        AND albums.release_year = release_year
+        AND albums.cover = cover
+    ) THEN
         INSERT INTO albums (title, release_year, cover) VALUES (title, release_year, cover);
-        SELECT album_id FROM albums WHERE albums.title = title AND albums.release_year = release_year AND albums.cover = cover;
+        SELECT album_id FROM albums
+        WHERE albums.title = title
+        AND albums.release_year = release_year
+        AND albums.cover = cover;
     ELSE
         SELECT 'ALBUM ALREADY EXISTS';
     END IF;
@@ -310,7 +329,8 @@ END//
 DELIMITER ;
 
 
--- Adds the given genre to the database and selects 'GENRE ADDED'. If the genre already exists, selects 'GENRE ALREADY EXISTS'
+-- Adds the given genre to the database and selects 'GENRE ADDED' if successful. If the genre already exists, selects
+-- 'GENRE ALREADY EXISTS'
 DROP PROCEDURE IF EXISTS add_genre;
 DELIMITER //
 CREATE PROCEDURE add_genre
@@ -328,7 +348,8 @@ END//
 DELIMITER ;
 
 
--- Connects the given album to the given genre and selects 'CONNECTION CREATED'. If the connection already exists, selects 'CONNECTION ALREADY EXISTS'. If either the album or genre doesn't exist, selects 'MISSING DATA'
+-- Connects the given album to the given genre and selects 'CONNECTION CREATED' if successful. If the connection already exists,
+-- selects 'CONNECTION ALREADY EXISTS'. If either the album or genre doesn't exist, selects 'MISSING DATA'
 DROP PROCEDURE IF EXISTS connect_album_genre;
 DELIMITER //
 CREATE PROCEDURE connect_album_genre
@@ -337,11 +358,15 @@ CREATE PROCEDURE connect_album_genre
     genre_name VARCHAR(64)
 )
 BEGIN
-    IF NOT EXISTS (SELECT * FROM albums_genres WHERE albums_genres.album_id = album_id AND albums_genres.genre_name = genre_name) THEN
-        IF (
+    IF NOT EXISTS (
+        SELECT * FROM albums_genres
+        WHERE albums_genres.album_id = album_id
+        AND albums_genres.genre_name = genre_name
+    ) THEN
+        IF
             EXISTS (SELECT * FROM albums WHERE albums.album_id = album_id)
             AND EXISTS (SELECT * FROM genres WHERE genres.genre_name = genre_name)
-        ) THEN
+        THEN
             INSERT INTO albums_genres VALUES (album_id, genre_name);
             SELECT 'CONNECTION CREATED';
         ELSE
@@ -354,8 +379,8 @@ END//
 DELIMITER ;
 
 
--- Adds the given song to the database and selects the internal ID of the song. If the song already exists, selects 'SONG ALREADY EXISTS'.
--- If either the referenced album or genre does not exist, selects 'MISSING DATA'
+-- Adds the given song to the database and selects the internal ID of the song if successful. If the song already exists,
+-- selects 'SONG ALREADY EXISTS'. If either the referenced album or genre does not exist, selects 'MISSING DATA'
 DROP PROCEDURE IF EXISTS add_song;
 DELIMITER //
 CREATE PROCEDURE add_song
@@ -368,27 +393,29 @@ CREATE PROCEDURE add_song
     genre_name VARCHAR(64)
 )
 BEGIN
-    IF NOT EXISTS (SELECT * FROM songs WHERE (
-        songs.title = title
+    IF NOT EXISTS (
+        SELECT * FROM songs
+        WHERE songs.title = title
         AND songs.track = track
         AND songs.length = length
         AND songs.stream = stream
         AND songs.album_id = album_id
         AND songs.genre_name = genre_name
-    )) THEN
-        IF (
+    ) THEN
+        IF
             EXISTS (SELECT * FROM albums WHERE albums.album_id = album_id)
             AND EXISTS (SELECT * FROM genres WHERE genres.genre_name = genre_name)
-        ) THEN
-            INSERT INTO songs (title, track, length, stream, album_id, genre_name) VALUES (title, track, length, stream, album_id, genre_name);
-            SELECT song_id FROM songs WHERE (
-                songs.title = title
-                AND songs.track = track
-                AND songs.length = length
-                AND songs.stream = stream
-                AND songs.album_id = album_id
-                AND songs.genre_name = genre_name
-            );
+        THEN
+            INSERT INTO songs (title, track, length, stream, album_id, genre_name)
+            VALUES (title, track, length, stream, album_id, genre_name);
+            
+            SELECT song_id FROM songs
+            WHERE songs.title = title
+            AND songs.track = track
+            AND songs.length = length
+            AND songs.stream = stream
+            AND songs.album_id = album_id
+            AND songs.genre_name = genre_name;
         ELSE
             SELECT 'MISSING DATA';
         END IF;
@@ -399,7 +426,8 @@ END//
 DELIMITER ;
 
 
--- Adds the given artist to the database and selected 'CONNECTION CREATED'. If the artist already exists, selects 'ARTIST ALREADY EXISTS'
+-- Adds the given artist to the database and selects 'CONNECTION CREATED' if successful. If the artist already exists, selects
+-- 'ARTIST ALREADY EXISTS'
 DROP PROCEDURE IF EXISTS add_artist;
 DELIMITER //
 CREATE PROCEDURE add_artist
@@ -417,7 +445,8 @@ END//
 DELIMITER ;
 
 
--- Connects the given artist to the given song and selects 'CONNECTION CREATED'. If the connection already exists, selects 'CONNECTION ALREADY EXISTS'. If either the artist or song doesn't exist, selects 'MISSING DATA'
+-- Connects the given artist to the given song and selects 'CONNECTION CREATED' if successful. If the connection already exists,
+-- selects 'CONNECTION ALREADY EXISTS'. If either the artist or song doesn't exist, selects 'MISSING DATA'
 DROP PROCEDURE IF EXISTS connect_artist_song;
 DELIMITER //
 CREATE PROCEDURE connect_artist_song
@@ -426,11 +455,15 @@ CREATE PROCEDURE connect_artist_song
     song_id INT
 )
 BEGIN
-    IF NOT EXISTS (SELECT * FROM artists_songs WHERE artists_songs.artist_name = artist_name AND artists_songs.song_id = song_id) THEN
-        IF (
+    IF NOT EXISTS (
+        SELECT * FROM artists_songs
+        WHERE artists_songs.artist_name = artist_name
+        AND artists_songs.song_id = song_id
+    ) THEN
+        IF
             EXISTS (SELECT * FROM artists WHERE artists.artist_name = artist_name)
             AND EXISTS (SELECT * FROM songs WHERE songs.song_id = song_id)
-        ) THEN
+        THEN
             INSERT INTO artists_songs VALUES (artist_name, song_id);
             SELECT 'CONNECTION CREATED';
         ELSE
@@ -443,7 +476,8 @@ END//
 DELIMITER ;
 
 
--- Connects the given artist to the given genre and selects 'CONNECTION CREATED'. If the connection already exists, selects 'CONNECTION ALREADY EXISTS'. If either the artist or genre doesn't exist, selects 'MISSING DATA'
+-- Connects the given artist to the given genre and selects 'CONNECTION CREATED' if successful. If the connection already
+-- exists, selects 'CONNECTION ALREADY EXISTS'. If either the artist or genre doesn't exist, selects 'MISSING DATA'
 DROP PROCEDURE IF EXISTS connect_artist_genre;
 DELIMITER //
 CREATE PROCEDURE connect_artist_genre
@@ -452,11 +486,15 @@ CREATE PROCEDURE connect_artist_genre
     genre_name VARCHAR(64)
 )
 BEGIN
-    IF NOT EXISTS (SELECT * FROM artists_genres WHERE artists_genres.artist_name = artist_name AND artists_genres.genre_name = genre_name) THEN
-        IF (
+    IF NOT EXISTS (
+        SELECT * FROM artists_genres
+        WHERE artists_genres.artist_name = artist_name
+        AND artists_genres.genre_name = genre_name
+    ) THEN
+        IF
             EXISTS (SELECT * FROM artists WHERE artists.artist_name = artist_name)
             AND EXISTS (SELECT * FROM genres WHERE genres.genre_name = genre_name)
-        ) THEN
+        THEN
             INSERT INTO artists_genres VALUES (artist_name, genre_name);
             SELECT 'CONNECTION CREATED';
         ELSE
@@ -469,7 +507,8 @@ END//
 DELIMITER ;
 
 
--- Adds the given playlist to the database and selects 'PLAYLIST ADDED'. If the playlist already exists, selects 'PLAYLIST ALREADY EXISTS'
+-- Adds the given playlist to the database and selects 'PLAYLIST ADDED' if successful. If the playlist already exists, selects
+-- 'PLAYLIST ALREADY EXISTS'
 DROP PROCEDURE IF EXISTS add_playlist;
 DELIMITER //
 CREATE PROCEDURE add_playlist
@@ -478,7 +517,11 @@ CREATE PROCEDURE add_playlist
     creator VARCHAR(32)
 )
 BEGIN
-    IF NOT EXISTS (SELECT * FROM playlists WHERE playlists.title = title AND playlists.creator = creator) THEN
+    IF NOT EXISTS (
+        SELECT * FROM playlists
+        WHERE playlists.title = title
+        AND playlists.creator = creator
+    ) THEN
         INSERT INTO playlists (title, creator) VALUES (title, creator);
         SELECT 'PLAYLIST ADDED';
     ELSE
@@ -488,7 +531,8 @@ END//
 DELIMITER ;
 
 
--- Deletes the given playlist and selects 'PLAYLIST DELETED'. If the playlist doesn't exist, selects 'PLAYLIST DOESN'T EXIST'.
+-- Deletes the given playlist and selects 'PLAYLIST DELETED' if successful. If the playlist doesn't exist, selects
+-- 'PLAYLIST DOESN'T EXIST'.
 DROP PROCEDURE IF EXISTS delete_playlist;
 DELIMITER //
 CREATE PROCEDURE delete_playlist
@@ -507,7 +551,8 @@ END//
 DELIMITER ;
 
 
--- Connects the given song to the given playlist and selects 'CONNECTION CREATED'. If the connection already exists, selects 'CONNECTION ALREADY EXISTS'. If either the song or playlist doesn't exist, selects 'MISSING DATA'
+-- Connects the given song to the given playlist and selects 'CONNECTION CREATED' if successful. If the connection already
+-- exists, selects 'CONNECTION ALREADY EXISTS'. If either the song or playlist doesn't exist, selects 'MISSING DATA'
 DROP PROCEDURE IF EXISTS connect_song_playlist;
 DELIMITER //
 CREATE PROCEDURE connect_song_playlist
@@ -516,7 +561,11 @@ CREATE PROCEDURE connect_song_playlist
     playlist_id INT
 )
 BEGIN
-    IF NOT EXISTS (SELECT * FROM songs_playlists WHERE songs_playlists.song_id = song_id AND songs_playlists.playlist_id = playlist_id) THEN
+    IF NOT EXISTS (
+        SELECT * FROM songs_playlists
+        WHERE songs_playlists.song_id = song_id
+        AND songs_playlists.playlist_id = playlist_id
+    ) THEN
         IF 
             EXISTS (SELECT * FROM songs WHERE songs.song_id = song_id)
             AND EXISTS (SELECT * FROM playlists WHERE playlists.playlist_id = playlist_id)
@@ -533,7 +582,8 @@ END//
 DELIMITER ;
 
 
--- Deletes the connection between the given song and playlist and selects 'CONNECTION DELETED'. If the connection doesn't exist, selects 'CONNECTION DOESN'T EXIST'.
+-- Deletes the connection between the given song and playlist and selects 'CONNECTION DELETED' if successful. If the connection
+-- doesn't exist, selects 'CONNECTION DOESN'T EXIST'
 DROP PROCEDURE IF EXISTS delete_song_playlist_connection;
 DELIMITER //
 CREATE PROCEDURE delete_song_playlist_connection
@@ -542,8 +592,15 @@ CREATE PROCEDURE delete_song_playlist_connection
     playlist_id INT
 )
 BEGIN
-    IF EXISTS (SELECT * FROM songs_playlists WHERE songs_playlists.song_id = song_id AND songs_playlists.playlist_id = playlist_id) THEN
-        DELETE FROM songs_playlists WHERE songs_playlists.song_id = song_id AND songs_playlists.playlist_id = playlist_id;
+    IF EXISTS (
+        SELECT * FROM songs_playlists
+        WHERE songs_playlists.song_id = song_id
+        AND songs_playlists.playlist_id = playlist_id
+    ) THEN
+        DELETE FROM songs_playlists
+        WHERE songs_playlists.song_id = song_id
+        AND songs_playlists.playlist_id = playlist_id;
+        
         SELECT 'CONNECTION DELETED';
     ELSE
         SELECT 'CONNECTION DOESN\'T EXIST';

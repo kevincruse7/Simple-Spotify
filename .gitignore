@@ -1,7 +1,6 @@
-# Cache
+# Build files
+build/
 cache/
-
-# Java binaries
 bin/
 
 # IDE project files

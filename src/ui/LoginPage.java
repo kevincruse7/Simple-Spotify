@@ -10,38 +10,41 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Controller for login page interface
+ * Controller class for login page interface
+ * 
+ * @author Kevin Cruse
+ * @author Jacob Shell
+ * @version 4/12/20
  */
 public class LoginPage extends Controller {
-    // Interface element references
     @FXML private TextField username;
     @FXML private PasswordField password;
     @FXML private Button login;
     
     @FXML
-    // Login to the database when the login button is pressed
+    // Handle database login request
     private void handleLogin(ActionEvent event) {
-        Stage stage = super.getMain().getStage();
-        Scene mainInterfaceScene = super.getMain().getMainInterface().getScene();
+        Stage stage = this.getMain().getStage();
+        Scene mainInterfaceScene = this.getMain().getMainInterface().getScene();
         
         // Get user credentials
         String username = this.username.getText();
         String password = this.password.getText();
 
         // Check credentials with database
-        String credentialCheck = super.getMain().getDatabase().login(username, password);
+        String credentialCheck = this.getMain().getDatabase().login(username, password);
         if (credentialCheck.equals("MATCH")) {
             // If credentials match, display the main interface
             stage.setScene(mainInterfaceScene);
         }
         else if (credentialCheck.equals("NEW")) {
             // If credentials indicate a new user, notify such and display the main interface
-            super.alert(AlertType.INFORMATION, "User \'" + username + "\' created!");
+            this.alert(AlertType.INFORMATION, "User \'" + username + "\' created!");
             stage.setScene(mainInterfaceScene);
         }
         else {
             // Otherwise, if credentials don't match, notify the user
-            super.alert(AlertType.ERROR, "Incorrect password!");
+            this.alert(AlertType.ERROR, "Incorrect password!");
         }
     }
 }

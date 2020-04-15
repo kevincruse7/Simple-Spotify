@@ -8,10 +8,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.Scene;
+
 import javafx.stage.Stage;
 
 /**
- * Generalized interface controller that holds references to the main application and interface scene
+ * Generalized interface controller that holds references to the main class and interface scene
+ * 
+ * @author Kevin Cruse
+ * @author Jacob Shell
+ * @version 4/12/20
  */
 public class Controller {
     private Main main;

@@ -8,18 +8,22 @@ import ui.MainInterface;
 import ui.UploadAlbum;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
  * Entrypoint for JavaFX application that holds references to application and user interface elements
+ * 
+ * @author Kevin Cruse
+ * @author Jacob Shell
+ * @version 4/12/20
  */
 public class Main extends Application {
     // Application references
@@ -52,11 +56,13 @@ public class Main extends Application {
 
         // Initialize user interface references
         this.stage = stage;
-        this.loginPage = this.loadInterface("resources/LoginPage.fxml");
-        this.mainInterface = this.loadInterface("resources/MainInterface.fxml");
-        this.changePassword = this.loadInterface("resources/ChangePassword.fxml");
-        this.uploadAlbum = this.loadInterface("resources/UploadAlbum.fxml");
-        this.createPlaylist = this.loadInterface("resources/CreatePlaylist.fxml");
+        this.loginPage = this.loadInterface("/resources/LoginPage.fxml");
+        this.mainInterface = this.loadInterface("/resources/MainInterface.fxml");
+        this.changePassword = this.loadInterface("/resources/ChangePassword.fxml");
+        this.uploadAlbum = this.loadInterface("/resources/UploadAlbum.fxml");
+        this.createPlaylist = this.loadInterface("/resources/CreatePlaylist.fxml");
+        
+        // Start separate thread to keep track of current song time
         this.songPlayer.startSongTimer();
 
         // Create cache folder for songs and covers retrieved from the database, if it does not already exist
@@ -77,9 +83,11 @@ public class Main extends Application {
      * Stops the JavaFX application
      */
     public void stop() {
+        // Close connection to database and stop song timer thread
         this.database.close();
         this.songPlayer.stopSongTimer();
 
+        // Drop all references and clean them up with garbage collection to help with cache deletion
         this.database = null;
         this.songPlayer = null;
         this.stage = null;
@@ -90,6 +98,7 @@ public class Main extends Application {
         this.createPlaylist = null;
         System.gc();
         
+        // Delete all files in the cache
         File[] files = new File("cache/").listFiles();
         for (File file : files) {
             file.delete();
@@ -171,13 +180,7 @@ public class Main extends Application {
     // Loads in the interface controller and scene at the given FXML file path
     private <T extends Controller> T loadInterface(String path) {
         // Open stream to file path
-        FileInputStream stream = null;
-        try {
-            stream = new FileInputStream(path);
-        }
-        catch (FileNotFoundException e) {
-            this.exitWithException(e, "reading FXML file at " + path);
-        }
+        InputStream stream = this.getClass().getResourceAsStream(path);
 
         // Load FXML file and get interface scene
         FXMLLoader loader = new FXMLLoader();

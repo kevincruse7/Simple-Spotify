@@ -25,18 +25,26 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 
 /**
- * Database interaction handler for Simple Spotify client.
+ * Database interaction handler
+ * 
+ * @author Kevin Cruse
+ * @author Jacob Shell
+ * @version 4/12/20
  */
 public class Database {
+    // Server connection properties
     private static final String SERVER_NAME = "localhost";
     private static final int PORT_NUMBER = 3306;
     private static final String DB_NAME = "simple_spotify";
-    private static final String DB_USERNAME = "root";
+    private static final String DB_USERNAME = "simplespotify";
     private static final String DB_PASSWORD = "";
     
+    // Main reference for access to central application elements
     private Main main;
-    private String user;
+
+    // Database connection reference and current session user
     private Connection conn;
+    private String user;
 
     public Database(Main main) {
         this.main = main;
@@ -62,7 +70,7 @@ public class Database {
     }
 
     /**
-     * Closes the connection to the database
+     * Closes connection to the database
      */
     public void close() {
         if (this.conn != null) {
@@ -78,7 +86,8 @@ public class Database {
     /**
      * Logs in using the given credentials. If the user exists in the database and the password matches, the user is set as the
      * sesion user and "MATCH" is returned. If the user exists in the database but the password does not match, "NO MATCH" is
-     * returned. If the user does not exist in the database, the user is created and set as the sesion user.
+     * returned. If the user does not exist in the database, the user is created and set as the sesion user, and "NEW" is
+     * returned
      */
     public String login(String username, String password) {
         String result = null;
@@ -110,7 +119,7 @@ public class Database {
     }
 
     /**
-     * Searches the database with the given query and returns any matches.
+     * Searches the database with the given query and returns any matches as a SearchResult
      */
     public SearchResult search(String query) {
         SearchResult result = null;
@@ -122,6 +131,7 @@ public class Database {
             searchDB.execute();
 
             // Process song results
+            // Uses HashMap to allow multiple tuples to be associated with a single song due to inner joins
             HashMap<Integer, Song> songMap = new HashMap<Integer, Song>();
             ResultSet songsResultSet = searchDB.getResultSet();
             while (songsResultSet.next()) {
@@ -129,7 +139,7 @@ public class Database {
                 Song song = songMap.get(songID);
                 
                 if (song == null) {
-                    // If song does not exist in map, initialize with base metadata
+                    // If song does not exist in map, create new song and initialize with metadata
                     song = new Song();
                     song.setID(songID);
                     song.setTitle(songsResultSet.getString("songs.title"));
@@ -160,6 +170,8 @@ public class Database {
                 }
             }
             songsResultSet.close();
+            
+            // Final song list
             ArrayList<Song> songs = new ArrayList<Song>(songMap.values());
 
             // Process artist results
@@ -171,7 +183,7 @@ public class Database {
                 Artist artist = artistMap.get(artistName);
 
                 if (artist == null) {
-                    // If artist does not exist in map, initialize with base metadata
+                    // If artist does not exist in map, create new artist and initialize with metadata
                     artist = new Artist();
                     artist.setName(artistName);
 
@@ -187,6 +199,8 @@ public class Database {
                 }
             }
             artistsResultSet.close();
+            
+            // Final artist list
             ArrayList<Artist> artists = new ArrayList<Artist>(artistMap.values());
 
             // Process album results
@@ -222,6 +236,7 @@ public class Database {
                     Artist artist = new Artist();
                     artist.setName(albumsResultSet.getString("artist_name"));
 
+                    // Ensure not to add duplicate genres or artists
                     if (!album.getGenres().contains(genre)) {
                         album.getGenres().add(genre);
                     }
@@ -231,9 +246,12 @@ public class Database {
                 }
             }
             albumsResultSet.close();
+
+            // Final album list
             ArrayList<Album> albums = new ArrayList<Album>(albumMap.values());
 
             // Process playlist results
+            // Playlist metadata does not have any joins, so only one tuple per playlist
             searchDB.getMoreResults();
             ArrayList<Playlist> playlists = new ArrayList<Playlist>();
             ResultSet playlistsResultSet = searchDB.getResultSet();
@@ -288,19 +306,20 @@ public class Database {
     }
 
     /**
-     * Uploads the given album to the database
+     * Uploads the given album to the database. Returns "ALBUM ALREADY EXISTS" if the album already exists in the database.
+     * Otherwise, returns null
      */
     public String uploadAlbum(Album album) {
         String result = null;
 
         try {
-            // Add album to the database
+            // Prepare call to add_album database procedure
             CallableStatement addAlbum = this.conn.prepareCall("{call add_album(?, ?, ?)}");
             addAlbum.setString(1, album.getTitle());
             addAlbum.setInt(2, album.getReleaseYear());
             addAlbum.setBinaryStream(3, new FileInputStream(album.getCover()));
 
-            // Get result from procedure call
+            // Call procedure and get result set
             ResultSet resultSet = addAlbum.executeQuery();
             resultSet.next();
             String addAlbumResult = resultSet.getString(1);
@@ -376,7 +395,8 @@ public class Database {
     }
     
     /**
-     * Creates a user playlist with the given title
+     * Creates a user playlist with the given title and returns "PLAYLIST ADDED" if successful. If playlist already exists,
+     * returns "PLAYLIST ALREADY EXISTS"
      */
     public String createPlaylist(String title) {
         String result = null;
@@ -389,6 +409,9 @@ public class Database {
             ResultSet addPlaylistResultSet = addPlaylist.executeQuery();
             addPlaylistResultSet.next();
             result = addPlaylistResultSet.getString(1);
+
+            addPlaylistResultSet.close();
+            addPlaylist.close();
         } catch (SQLException e) {
             this.main.exitWithException(e, "creating new playlist");
         }
@@ -397,7 +420,8 @@ public class Database {
     }
 
     /**
-     * Deletes the given playlist from the database
+     * Deletes the given playlist from the database and returns "PLAYLIST DELETED" if successful. If the playlist doesn't exist
+     * in the database, returns "PLAYLIST DOESN'T EXIST"
      */
     public String deletePlaylist(Playlist playlist) {
         String deletePlaylistResult = null;
@@ -420,7 +444,9 @@ public class Database {
     }
 
     /**
-     * Adds the given song to the given playlist
+     * Adds the given song to the given playlist and returns "CONNECTION CREATED" if successful. If the song already exists in
+     * the playlist, returns "CONNECTION ALREADY EXISTS". If either the given song or the given playlist doesn't exist in the
+     * database, returns "MISSING DATA"
      */
     public String addToPlaylist(Song song, Playlist playlist) {
         String addToPlaylistResult = null;
@@ -444,7 +470,8 @@ public class Database {
     }
 
     /**
-     * Removes the given song from the given playlist
+     * Removes the given song from the given playlist and returns "CONNECTION DELETED" if successful. If the song doesn't exist
+     * in the playlist, returns "CONNECTION DOESN'T EXIST"
      */
     public String removeFromPlaylist(Song song, Playlist playlist) {
         String removeFromPlaylistResult = null;
@@ -468,56 +495,59 @@ public class Database {
     }
 
     /**
-     * Populates the given song with metadata and stream data from the database
+     * Populates the given song with metadata from the database and stores MP3 file to cache
      */
     public void populateWithData(Song song) {
+        // If the song already has file in the cache, only request metadata from the database to save processing time
+        String query;
+        File outputFile = new File("cache/" + Integer.toString(song.getID()) + ".mp3");
+        if (outputFile.exists()) {
+            query = "SELECT DISTINCT "
+                        + "songs.title, "
+                        + "songs.track, "
+                        + "songs.length, "
+                        + "songs.genre_name, "
+                        + "artists_songs.artist_name, "
+                        + "albums.title, "
+                        + "albums.release_year "
+                    + "FROM songs "
+                    + "JOIN artists_songs ON songs.song_id = artists_songs.song_id "
+                    + "JOIN albums ON songs.album_id = albums.album_id "
+                    + "WHERE songs.song_id = " + Integer.toString(song.getID());
+        } else {
+            query = "SELECT DISTINCT "
+                        + "songs.title, "
+                        + "songs.track, "
+                        + "songs.length, "
+                        + "songs.genre_name, "
+                        + "songs.stream, "
+                        + "artists_songs.artist_name, "
+                        + "albums.title, "
+                        + "albums.release_year "
+                    + "FROM songs "
+                    + "JOIN artists_songs ON songs.song_id = artists_songs.song_id "
+                    + "JOIN albums ON songs.album_id = albums.album_id "
+                    + "WHERE songs.song_id = " + Integer.toString(song.getID());
+        }
+        
         try {
-            String query;
-            File outputFile = new File("cache/" + Integer.toString(song.getID()) + ".mp3");
-            if (outputFile.exists()) {
-                query = "SELECT DISTINCT "
-                            + "songs.title, "
-                            + "songs.track, "
-                            + "songs.length, "
-                            + "songs.genre_name, "
-                            + "artists_songs.artist_name, "
-                            + "albums.title, "
-                            + "albums.release_year "
-                        + "FROM songs "
-                        + "JOIN artists_songs ON songs.song_id = artists_songs.song_id "
-                        + "JOIN albums ON songs.album_id = albums.album_id "
-                        + "WHERE songs.song_id = " + Integer.toString(song.getID());
-            } else {
-                query = "SELECT DISTINCT "
-                            + "songs.title, "
-                            + "songs.track, "
-                            + "songs.length, "
-                            + "songs.genre_name, "
-                            + "songs.stream, "
-                            + "artists_songs.artist_name, "
-                            + "albums.title, "
-                            + "albums.release_year "
-                        + "FROM songs "
-                        + "JOIN artists_songs ON songs.song_id = artists_songs.song_id "
-                        + "JOIN albums ON songs.album_id = albums.album_id "
-                        + "WHERE songs.song_id = " + Integer.toString(song.getID());
-            }
-            
-            // Retrieve stream data from database
             Statement selectStream = this.conn.createStatement();
             ResultSet selectResultSet = selectStream.executeQuery(query);
             selectResultSet.next();
             
+            // Initialize song with metadata
             song.setTitle(selectResultSet.getString("songs.title"));
             song.setTrack(selectResultSet.getInt("songs.track"));;
             song.setGenre(selectResultSet.getString("songs.genre_name"));
             song.setLength(selectResultSet.getInt("songs.length"));
             song.setReleaseYear(selectResultSet.getInt("albums.release_year"));
             
+            // Set song album
             Album album = new Album();
             album.setTitle(selectResultSet.getString("albums.title"));
             song.setAlbum(album);
 
+            // Write out file if not already present in the cache
             if (!outputFile.exists()) {
                 // Read in stream data to buffer
                 InputStream inputStream = selectResultSet.getBinaryStream("songs.stream");
@@ -531,6 +561,7 @@ public class Database {
                 outputStream.close();
             }
 
+            // Set song artists
             song.setArtists(new ArrayList<Artist>());
             Artist artist = new Artist();
             artist.setName(selectResultSet.getString("artists_songs.artist_name"));
@@ -545,11 +576,12 @@ public class Database {
             // Close database connections
             selectResultSet.close();
             selectStream.close();
-
-            song.setFile(outputFile);
         } catch (SQLException | IOException e) {
             this.main.exitWithException(e, "reading in song stream data");
         }
+
+        // Set song file
+        song.setFile(outputFile);
     }
 
     /**
@@ -559,10 +591,12 @@ public class Database {
         ArrayList<Song> songs = new ArrayList<Song>();
 
         try {
+            // Select all corresponding song IDs
             Statement selectSongs = this.conn.createStatement();
             ResultSet selectSongsResultSet = selectSongs.executeQuery("SELECT song_id FROM artists_songs WHERE artist_name = \'"
                     + artist.getName() + "\'");
             
+            // Covert song IDs to song objects and populate with file and metadata
             while (selectSongsResultSet.next()) {
                 Song song = new Song();
                 song.setID(selectSongsResultSet.getInt(1));
@@ -585,34 +619,39 @@ public class Database {
     public void populateWithData(Album album) {
         ArrayList<Song> songs = new ArrayList<Song>();
 
+        // If album already has cover image saved in the cache, only request metadata to save processing time
+        String query;
+        File outputFile = new File("cache/" + Integer.toString(album.getID()) + ".png");
+        if (outputFile.exists()) {
+            query = "SELECT songs.song_id FROM albums "
+                    + "JOIN songs ON albums.album_id = songs.album_id "
+                    + "WHERE albums.album_id = " + album.getID();
+        } else {
+            query = "SELECT songs.song_id, albums.cover FROM albums "
+                    + "JOIN songs ON albums.album_id = songs.album_id "
+                    + "WHERE albums.album_id = " + album.getID();
+        }
+        
         try {
-            String query;
-            File outputFile = new File("cache/" + Integer.toString(album.getID()) + ".png");
-            if (outputFile.exists()) {
-                query = "SELECT songs.song_id FROM albums "
-                        + "JOIN songs ON albums.album_id = songs.album_id "
-                        + "WHERE albums.album_id = " + album.getID();
-            } else {
-                query = "SELECT songs.song_id, albums.cover FROM albums "
-                        + "JOIN songs ON albums.album_id = songs.album_id "
-                        + "WHERE albums.album_id = " + album.getID();
-            }
-            
             Statement selectSongs = this.conn.createStatement();
             ResultSet selectSongsResultSet = selectSongs.executeQuery(query);
             selectSongsResultSet.next();
             
+            // Write out album cover file if it doesn't already exist in the cache
             if (!outputFile.exists()) {
+                // Read in cover stream from database
                 InputStream inputStream = selectSongsResultSet.getBinaryStream("albums.cover");
                 byte[] buffer = new byte[inputStream.available()];
                 inputStream.read(buffer);
                 inputStream.close();
 
+                // Write out stream to PNG file
                 FileOutputStream outputStream = new FileOutputStream(outputFile);
                 outputStream.write(buffer);
                 outputStream.close();
             }
                 
+            // Populate all corresponding songs with files and metadata
             Song song = new Song();
             song.setID(selectSongsResultSet.getInt("songs.song_id"));
             this.populateWithData(song);
@@ -644,10 +683,12 @@ public class Database {
         ArrayList<Song> songs = new ArrayList<Song>();
 
         try {
+            // Select all corresponding song IDs
             Statement selectSongs = this.conn.createStatement();
             ResultSet selectSongsResultSet = selectSongs.executeQuery("SELECT song_id FROM songs_playlists WHERE playlist_id = "
                     + playlist.getID());
             
+            // Convert song IDs to objects and populate songs with files and metadata
             while (selectSongsResultSet.next()) {
                 Song song = new Song();
                 song.setID(selectSongsResultSet.getInt(1));

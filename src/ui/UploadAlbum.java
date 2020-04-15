@@ -26,19 +26,35 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
+/**
+ * Controller class for upload album interface
+ * 
+ * @author Kevin Cruse
+ * @author Jacob Shell
+ * @version 4/12/20
+ */
 public class UploadAlbum extends Controller {
     @FXML private TextField albumTitle;
     @FXML private Button uploadSongs;
     @FXML private Button uploadCoverArt;
     @FXML private Button submit;
 
+    // Reference to the stage this interface belongs to
     private Stage stage;
 
     private List<String> genres;
     private File cover;
     private List<Song> songs;
 
+    /**
+     * Sets the upload album interface stage to the passed value
+     */
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+    
     @FXML
+    // Handle album upload request
     private void handleUploadSongs(ActionEvent event) {
         // Initialize album metadata lists
         this.genres = new ArrayList<String>();
@@ -59,7 +75,7 @@ public class UploadAlbum extends Controller {
                 try {
                     songData = AudioFileIO.read(songFile);
                 } catch (Exception e) {
-                    super.getMain().exitWithException(e, "reading in MP3 metadata");
+                    this.getMain().exitWithException(e, "reading in MP3 metadata");
                 }
 
                 // Initialize song object and metadata types
@@ -99,6 +115,7 @@ public class UploadAlbum extends Controller {
     }
 
     @FXML
+    // Handle cover art upload request
     private void handleUploadCoverArt(ActionEvent event) {
         // Get cover art from user
         JFileChooser chooser = new JFileChooser();
@@ -112,16 +129,17 @@ public class UploadAlbum extends Controller {
     }
     
     @FXML
+    // Handle submit album request
     private void handleSubmit(ActionEvent event) {
         String albumTitle = this.albumTitle.getText();
         
         // Check if user forgot to enter any fields. If not, upload album to the database
         if (albumTitle.equals("")) {
-            super.alert(this.stage, AlertType.ERROR, "No title entered!");
+            this.alert(this.stage, AlertType.ERROR, "No title entered!");
         } else if (this.songs == null || this.songs.size() == 0) {
-            super.alert(this.stage, AlertType.ERROR, "No songs selected!");
+            this.alert(this.stage, AlertType.ERROR, "No songs selected!");
         } else if (this.cover == null) {
-            super.alert(this.stage, AlertType.ERROR, "No cover art selected!");
+            this.alert(this.stage, AlertType.ERROR, "No cover art selected!");
         } else {
             // Initialize the album
             Album album = new Album();
@@ -133,10 +151,10 @@ public class UploadAlbum extends Controller {
             album.setSongs(this.songs);
 
             // Push album to the database
-            if (super.getMain().getDatabase().uploadAlbum(album) != null) {
-                super.alert(AlertType.ERROR, "Album already exists!");
+            if (this.getMain().getDatabase().uploadAlbum(album) != null) {
+                this.alert(AlertType.ERROR, "Album already exists!");
             } else {
-                super.alert(AlertType.INFORMATION, "Album uploaded!");
+                this.alert(AlertType.INFORMATION, "Album uploaded!");
 
                 // Close the window if album upload succeeds
                 this.stage.close();
@@ -148,9 +166,5 @@ public class UploadAlbum extends Controller {
             this.cover = null;
             this.songs = null;
         }
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
 }
